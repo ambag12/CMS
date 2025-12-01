@@ -21,7 +21,7 @@ SECRET_KEY = env(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 
 DATE_VALIDATORS = [MinValueValidator(date(1970, 1, 1))]  # Unix epoch!
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
+    "django_filters",
     "academic.apps.AcademicConfig",
     "administration.apps.AdministrationConfig",
     "attendance.apps.AttendanceConfig",

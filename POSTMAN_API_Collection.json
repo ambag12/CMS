@@ -1,0 +1,664 @@
+{
+	"info": {
+		"_postman_id": "scms-api-collection",
+		"name": "Django School CMS API Collection",
+		"description": "Complete API collection for Django School CMS with sample data",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"yourpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "login", ""]
+						},
+						"description": "Login with email and password. Response includes JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "profile", ""]
+						},
+						"description": "Get currently authenticated user profile"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/users/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "users", ""]
+						},
+						"description": "Get list of all users (excluding parents)"
+					},
+					"response": []
+				},
+				{
+					"name": "List Users with Filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/users/?first_name=john&last_name=doe",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "users", ""],
+							"query": [
+								{
+									"key": "first_name",
+									"value": "john"
+								},
+								{
+									"key": "last_name",
+									"value": "doe"
+								}
+							]
+						},
+						"description": "Filter users by first_name, middle_name, or last_name"
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"newuser@example.com\",\n    \"password\": \"SecurePass123\",\n    \"first_name\": \"John\",\n    \"middle_name\": \"Michael\",\n    \"last_name\": \"Doe\",\n    \"phone_number\": \"+255712345678\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/users/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "users", ""]
+						},
+						"description": "Create a new user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/users/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "users", "1", ""]
+						},
+						"description": "Get a specific user by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"updated@example.com\",\n    \"first_name\": \"Jane\",\n    \"middle_name\": \"Marie\",\n    \"last_name\": \"Smith\",\n    \"phone_number\": \"+255712345679\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/users/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "users", "1", ""]
+						},
+						"description": "Update user details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/users/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "users", "1", ""]
+						},
+						"description": "Delete a user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teachers",
+			"item": [
+				{
+					"name": "List Teachers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/teachers/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "teachers", ""]
+						},
+						"description": "Get list of all teachers"
+					},
+					"response": []
+				},
+				{
+					"name": "List Teachers with Filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/teachers/?first_name=sarah&last_name=johnson",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "teachers", ""],
+							"query": [
+								{
+									"key": "first_name",
+									"value": "sarah"
+								},
+								{
+									"key": "last_name",
+									"value": "johnson"
+								}
+							]
+						},
+						"description": "Filter teachers by first_name, middle_name, or last_name"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Teacher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"sarah\",\n    \"middle_name\": \"elizabeth\",\n    \"last_name\": \"johnson\",\n    \"email\": \"sarah.johnson@school.com\",\n    \"phone_number\": \"+255713456789\",\n    \"empId\": \"TCH20250001\",\n    \"short_name\": \"SJ\",\n    \"subject_specialization\": [\"mathematics\", \"physics\"],\n    \"address\": \"123 main street, dar es salaam\",\n    \"gender\": \"female\",\n    \"date_of_birth\": \"1985-05-15\",\n    \"salary\": 800000,\n    \"national_id\": \"19850515-12345-67890-12\",\n    \"nssf_number\": \"NS1234567\",\n    \"tin_number\": \"TIN123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/teachers/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "teachers", ""]
+						},
+						"description": "Create a new teacher. Note: subject_specialization should be an array of subject names that exist in the database."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Teacher by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/teachers/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "teachers", "1", ""]
+						},
+						"description": "Get a specific teacher by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Teacher",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"sarah\",\n    \"middle_name\": \"elizabeth\",\n    \"last_name\": \"johnson\",\n    \"email\": \"sarah.johnson@school.com\",\n    \"phone_number\": \"+255713456789\",\n    \"empId\": \"TCH20250001\",\n    \"short_name\": \"SJ\",\n    \"subject_specialization\": [\"mathematics\", \"physics\", \"chemistry\"],\n    \"address\": \"456 updated street, dar es salaam\",\n    \"gender\": \"female\",\n    \"date_of_birth\": \"1985-05-15\",\n    \"salary\": 850000,\n    \"national_id\": \"19850515-12345-67890-12\",\n    \"nssf_number\": \"NS1234567\",\n    \"tin_number\": \"TIN123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/teachers/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "teachers", "1", ""]
+						},
+						"description": "Update teacher details"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Teacher",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/teachers/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "teachers", "1", ""]
+						},
+						"description": "Delete a teacher"
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk Upload Teachers (Excel)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/path/to/teachers.xlsx",
+									"description": "Upload Excel file with teacher data"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/teachers/bulk-upload/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "teachers", "bulk-upload", ""]
+						},
+						"description": "Bulk upload teachers from Excel file. Required columns: first_name, middle_name, last_name, phone_number, employment_id, short_name, subject_specialization, address, gender, date_of_birth, salary"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accountants",
+			"item": [
+				{
+					"name": "List Accountants",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/accountants/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "accountants", ""]
+						},
+						"description": "Get list of all accountants"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Accountant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"james\",\n    \"middle_name\": \"robert\",\n    \"last_name\": \"williams\",\n    \"email\": \"james.williams@school.com\",\n    \"phone_number\": \"+255714567890\",\n    \"empId\": \"ACC20250001\",\n    \"address\": \"789 finance street, dar es salaam\",\n    \"gender\": \"male\",\n    \"date_of_birth\": \"1980-08-20\",\n    \"salary\": 1200000,\n    \"national_id\": \"19800820-12345-67890-13\",\n    \"nssf_number\": \"NS7654321\",\n    \"tin_number\": \"TIN654321\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/accountants/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "accountants", ""]
+						},
+						"description": "Create a new accountant. A corresponding user account will be auto-created."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Accountant by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/accountants/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "accountants", "1", ""]
+						},
+						"description": "Get a specific accountant by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Accountant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"james\",\n    \"middle_name\": \"robert\",\n    \"last_name\": \"williams\",\n    \"email\": \"james.williams.updated@school.com\",\n    \"phone_number\": \"+255714567890\",\n    \"empId\": \"ACC20250001\",\n    \"address\": \"updated address, dar es salaam\",\n    \"gender\": \"male\",\n    \"date_of_birth\": \"1980-08-20\",\n    \"salary\": 1300000,\n    \"national_id\": \"19800820-12345-67890-13\",\n    \"nssf_number\": \"NS7654321\",\n    \"tin_number\": \"TIN654321\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/accountants/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "accountants", "1", ""]
+						},
+						"description": "Update accountant details. Linked user will also be updated."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Accountant",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/accountants/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "accountants", "1", ""]
+						},
+						"description": "Delete an accountant"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Parents",
+			"item": [
+				{
+					"name": "List Parents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/parents/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "parents", ""]
+						},
+						"description": "Get list of all parents"
+					},
+					"response": []
+				},
+				{
+					"name": "List Parents with Filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/parents/?first_name=mary&last_name=smith",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "parents", ""],
+							"query": [
+								{
+									"key": "first_name",
+									"value": "mary"
+								},
+								{
+									"key": "last_name",
+									"value": "smith"
+								}
+							]
+						},
+						"description": "Filter parents by first_name, middle_name, or last_name"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Parent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"mary\",\n    \"middle_name\": \"ann\",\n    \"last_name\": \"smith\",\n    \"email\": \"mary.smith@example.com\",\n    \"phone_number\": \"+255715678901\",\n    \"address\": \"456 parent avenue, dar es salaam\",\n    \"gender\": \"female\",\n    \"date_of_birth\": \"1975-03-10\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/parents/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "parents", ""]
+						},
+						"description": "Create a new parent. A corresponding user account will be auto-created."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Parent by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/parents/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "parents", "1", ""]
+						},
+						"description": "Get a specific parent by ID with children details"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Parent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"mary\",\n    \"middle_name\": \"ann\",\n    \"last_name\": \"smith-johnson\",\n    \"email\": \"mary.updated@example.com\",\n    \"phone_number\": \"+255715678901\",\n    \"address\": \"updated address, dar es salaam\",\n    \"gender\": \"female\",\n    \"date_of_birth\": \"1975-03-10\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/parents/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "parents", "1", ""]
+						},
+						"description": "Update parent details. Linked user will also be updated."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Parent",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/parents/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "parents", "1", ""]
+						},
+						"description": "Delete a parent"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

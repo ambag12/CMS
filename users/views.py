@@ -98,7 +98,14 @@ class UserListView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        # Extract password if provided and hash it before saving
+        password = request.data.get('password')
+        if password:
+            from django.contrib.auth.hashers import make_password
+            hashed_password = make_password(password)
+            user = serializer.save(password=hashed_password)
+        else:
+            user = serializer.save()
         return Response(self.get_serializer(user).data, status=status.HTTP_201_CREATED)
 
 
