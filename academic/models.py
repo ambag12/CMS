@@ -652,96 +652,96 @@ class StudentClassEnrollment(models.Model):
             queryset.delete()  # Perform the actual deletion
 
 
-class StudentsMedicalHistory(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    history = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to="students_medical_files", blank=True, null=True)
+# class StudentsMedicalHistory(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+#     history = models.TextField(blank=True, null=True)
+#     file = models.FileField(upload_to="students_medical_files", blank=True, null=True)
 
-    def __str__(self):
-        return f"Medical History for {self.student}"
+#     def __str__(self):
+#         return f"Medical History for {self.student}"
 
-    def clean(self):
-        # You can add validation if a file is uploaded and ensure it meets the constraints
-        if not self.history and not self.file:
-            raise ValidationError(
-                "At least one of 'history' or 'file' must be provided."
-            )
-
-
-class StudentsPreviousAcademicHistory(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    former_school = models.CharField(max_length=255, help_text="Former school name")
-    last_gpa = models.FloatField()
-    notes = models.CharField(
-        max_length=255,
-        blank=True,
-        help_text="Indicate student's academic performance according to your observation",
-    )
-    academic_record = models.FileField(
-        upload_to="students_former_academic_files", blank=True
-    )
-
-    def __str__(self):
-        return f"Previous Academic History for {self.student}"
-
-    def clean(self):
-        # You can add validation for the file field if needed
-        if not self.former_school:
-            raise ValidationError("Former school name is required.")
+#     def clean(self):
+#         # You can add validation if a file is uploaded and ensure it meets the constraints
+#         if not self.history and not self.file:
+#             raise ValidationError(
+#                 "At least one of 'history' or 'file' must be provided."
+#             )
 
 
-class Dormitory(models.Model):
-    name = models.CharField(max_length=150)
-    capacity = models.PositiveIntegerField(blank=True, null=True)
-    occupied_beds = models.IntegerField(blank=True, null=True)
-    captain = models.ForeignKey(Student, on_delete=models.CASCADE, blank=True)
+# class StudentsPreviousAcademicHistory(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+#     former_school = models.CharField(max_length=255, help_text="Former school name")
+#     last_gpa = models.FloatField()
+#     notes = models.CharField(
+#         max_length=255,
+#         blank=True,
+#         help_text="Indicate student's academic performance according to your observation",
+#     )
+#     academic_record = models.FileField(
+#         upload_to="students_former_academic_files", blank=True
+#     )
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return f"Previous Academic History for {self.student}"
 
-    def available_beds(self):
-        total = self.capacity - self.occupied_beds
-        if total <= 0:
-            return 0  # Return 0 to indicate no available beds
-        return total
-
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        if (
-            self.capacity is not None
-            and self.occupied_beds is not None
-            and self.capacity <= self.occupied_beds
-        ):
-            raise ValueError(
-                f"All beds in {self.name} are occupied. Please add more beds or allocate to another dormitory."
-            )
-        super(Dormitory, self).save()
+#     def clean(self):
+#         # You can add validation for the file field if needed
+#         if not self.former_school:
+#             raise ValidationError("Former school name is required.")
 
 
-class DormitoryAllocation(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    dormitory = models.ForeignKey(Dormitory, on_delete=models.CASCADE)
-    date_from = models.DateField(auto_now_add=True)
-    date_till = models.DateField(blank=True, null=True)
+# class Dormitory(models.Model):
+#     name = models.CharField(max_length=150)
+#     capacity = models.PositiveIntegerField(blank=True, null=True)
+#     occupied_beds = models.IntegerField(blank=True, null=True)
+#     captain = models.ForeignKey(Student, on_delete=models.CASCADE, blank=True)
 
-    def __str__(self):
-        return str(self.student.admission_number)
+#     def __str__(self):
+#         return self.name
 
-    @transaction.atomic
-    def update_dormitory(self):
-        """Update the capacity of the selected dormitory."""
-        selected_dorm = Dormitory.objects.select_for_update().get(pk=self.dormitory.pk)
-        if selected_dorm.available_beds() <= 0:
-            raise ValidationError(f"{selected_dorm.name} has no available beds.")
-        selected_dorm.occupied_beds += 1
-        selected_dorm.save()
+#     def available_beds(self):
+#         total = self.capacity - self.occupied_beds
+#         if total <= 0:
+#             return 0  # Return 0 to indicate no available beds
+#         return total
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        self.update_dormitory()
-        super(DormitoryAllocation, self).save()
+#     def save(
+#         self, force_insert=False, force_update=False, using=None, update_fields=None
+#     ):
+#         if (
+#             self.capacity is not None
+#             and self.occupied_beds is not None
+#             and self.capacity <= self.occupied_beds
+#         ):
+#             raise ValueError(
+#                 f"All beds in {self.name} are occupied. Please add more beds or allocate to another dormitory."
+#             )
+#         super(Dormitory, self).save()
+
+
+# class DormitoryAllocation(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+#     dormitory = models.ForeignKey(Dormitory, on_delete=models.CASCADE)
+#     date_from = models.DateField(auto_now_add=True)
+#     date_till = models.DateField(blank=True, null=True)
+
+#     def __str__(self):
+#         return str(self.student.admission_number)
+
+#     @transaction.atomic
+#     def update_dormitory(self):
+#         """Update the capacity of the selected dormitory."""
+#         selected_dorm = Dormitory.objects.select_for_update().get(pk=self.dormitory.pk)
+#         if selected_dorm.available_beds() <= 0:
+#             raise ValidationError(f"{selected_dorm.name} has no available beds.")
+#         selected_dorm.occupied_beds += 1
+#         selected_dorm.save()
+
+#     def save(
+#         self, force_insert=False, force_update=False, using=None, update_fields=None
+#     ):
+#         self.update_dormitory()
+#         super(DormitoryAllocation, self).save()
 
 
 class StudentFile(models.Model):
@@ -763,64 +763,64 @@ class StudentFile(models.Model):
         super().clean()
 
 
-class StudentHealthRecord(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    record = models.TextField()
+# class StudentHealthRecord(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+#     record = models.TextField()
 
-    def __str__(self):
-        return str(self.student)
+#     def __str__(self):
+#         return str(self.student)
 
-    def clean(self):
-        """Ensure that the record contains appropriate information."""
-        if len(self.record) < 10:  # Ensure some minimal content in the record
-            raise ValidationError("Health record must contain more information.")
-        super().clean()
-
-
-class MessageToParent(models.Model):
-    """Store a message to be shown to parents for a specific amount of time."""
-
-    message = models.TextField(help_text="Message to be shown to Parents.")
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(default=timezone.now)
-
-    def __str__(self):
-        return self.message
-
-    def clean(self):
-        """Ensure that end date is not before start date."""
-        if self.end_date < self.start_date:
-            raise ValidationError("End date cannot be before the start date.")
-        super().clean()
-
-    @property
-    def is_active(self):
-        """Check if the message is currently active."""
-        today = timezone.now().date()
-        return self.start_date <= today <= self.end_date
+#     def clean(self):
+#         """Ensure that the record contains appropriate information."""
+#         if len(self.record) < 10:  # Ensure some minimal content in the record
+#             raise ValidationError("Health record must contain more information.")
+#         super().clean()
 
 
-class MessageToTeacher(models.Model):
-    """Stores a message to be shown to Teachers for a specific amount of time."""
+# class MessageToParent(models.Model):
+#     """Store a message to be shown to parents for a specific amount of time."""
 
-    message = models.TextField(help_text="Message to be shown to Teachers.")
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(default=timezone.now)
+#     message = models.TextField(help_text="Message to be shown to Parents.")
+#     start_date = models.DateField(default=timezone.now)
+#     end_date = models.DateField(default=timezone.now)
 
-    def __str__(self):
-        return self.message
+#     def __str__(self):
+#         return self.message
 
-    def clean(self):
-        """Ensure that end date is not before start date."""
-        if self.end_date < self.start_date:
-            raise ValidationError("End date cannot be before the start date.")
-        super().clean()
+#     def clean(self):
+#         """Ensure that end date is not before start date."""
+#         if self.end_date < self.start_date:
+#             raise ValidationError("End date cannot be before the start date.")
+#         super().clean()
 
-    @property
-    def is_active(self):
-        """Check if the message is currently active."""
-        today = timezone.now().date()
-        return self.start_date <= today <= self.end_date
+#     @property
+#     def is_active(self):
+#         """Check if the message is currently active."""
+#         today = timezone.now().date()
+#         return self.start_date <= today <= self.end_date
+
+
+# class MessageToTeacher(models.Model):
+#     """Stores a message to be shown to Teachers for a specific amount of time."""
+
+#     message = models.TextField(help_text="Message to be shown to Teachers.")
+#     start_date = models.DateField(default=timezone.now)
+#     end_date = models.DateField(default=timezone.now)
+
+#     def __str__(self):
+#         return self.message
+
+#     def clean(self):
+#         """Ensure that end date is not before start date."""
+#         if self.end_date < self.start_date:
+#             raise ValidationError("End date cannot be before the start date.")
+#         super().clean()
+
+#     @property
+#     def is_active(self):
+#         """Check if the message is currently active."""
+#         today = timezone.now().date()
+#         return self.start_date <= today <= self.end_date
 
 
 class FamilyAccessUser(CustomUser):

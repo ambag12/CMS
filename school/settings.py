@@ -44,11 +44,12 @@ INSTALLED_APPS = [
     "administration.apps.AdministrationConfig",
     "attendance.apps.AttendanceConfig",
     "examination.apps.ExaminationConfig",
-    "finance.apps.FinanceConfig",
-    "notes.apps.NotesConfig",
-    "schedule.apps.ScheduleConfig",
+    # "finance.apps.FinanceConfig",
+    # "notes.apps.NotesConfig",
+    # "schedule.apps.ScheduleConfig",
     "sis.apps.SisConfig",
     "users.apps.UsersConfig",
+    
 ]
 
 MIDDLEWARE = [

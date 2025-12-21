@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from academic.models import (
-    StudentsMedicalHistory,
+    # StudentsMedicalHistory,
     Student,
     Parent,
     ReasonLeft,
@@ -17,10 +17,10 @@ class ReasonLeftSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class StudentHealthRecordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StudentsMedicalHistory
-        fields = "__all__"
+# class StudentHealthRecordSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = StudentsMedicalHistory
+#         fields = "__all__"
 
 
 class ParentSerializer(serializers.ModelSerializer):

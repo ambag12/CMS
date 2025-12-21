@@ -246,8 +246,7 @@ class TeacherSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         subject_specialization_data = validated_data.pop("subject_specialization")
         teacher = Teacher.objects.create(**validated_data)
-        subjects = Subject.objects.filter(name__in=subject_specialization_data)
-        teacher.subject_specialization.set(subjects)
+        teacher.subject_specialization.set(subject_specialization_data)
         return teacher
 
 
