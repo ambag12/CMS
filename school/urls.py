@@ -54,11 +54,11 @@ urlpatterns = [
     path("api/attendance/", include("api.attendance.urls")),
     path("api/assignments/", include("api.assignments.urls")),
     path("api/blog/", include("api.blog.urls")),
-    path("api/finance/", include("api.finance.urls")),
+    # path("api/finance/", include("api.finance.urls")),
     # path('api/journals/', include('api.journals.urls')),
     # path("api/notes/", include("api.notes.urls")),
     path("api/users/", include("api.users.urls")),
-    path("api/timetable/", include("api.schedule.urls")),
+    # path("api/timetable/", include("api.schedule.urls")),
     path("api/sis/", include("api.sis.urls")),
 ]
 
